@@ -12,7 +12,7 @@ Directory = TypeVar("Directory", bound=Path)
 File = TypeVar("File", bound=Path)
 
 # https://github.com/python/typing/issues/182
-JsonSerializable = Union[List[Any], Dict[Any, Any]]
+JsonSerializable = TypeVar("JsonSerializable", bound=Union[List[Any], Dict[Any, Any]])
 
 # This is supposed to be some data type for multidimensional array libraries as numpy or torch
 Dtype = TypeVar("Dtype")
