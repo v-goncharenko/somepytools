@@ -1,8 +1,10 @@
 import json
 
+from .general import str2pathlib
 from .typing import File, JsonSerializable
 
 
+@str2pathlib
 def read_json(filename: File, **kwargs) -> JsonSerializable:
     """Reads data from json-file.
 
@@ -17,6 +19,7 @@ def read_json(filename: File, **kwargs) -> JsonSerializable:
         return json.load(file, **kwargs)
 
 
+@str2pathlib
 def write_json(
     data: JsonSerializable, filename: File, *, newline: bool = False, **kwargs
 ) -> File:
@@ -44,11 +47,13 @@ def write_json(
 try:
     import yaml
 
+    @str2pathlib
     def read_yaml(filename: File) -> JsonSerializable:
         """Reads YAML file. analogue to `read_json`"""
         with open(filename) as file:
             return yaml.safe_load(file)
 
+    @str2pathlib
     def write_yaml(data: JsonSerializable, filename: File, **kwargs) -> File:
         """Writes YAML file. analogue to `write_json`"""
         with open(filename, "w") as file:
@@ -58,14 +63,17 @@ try:
 except ModuleNotFoundError:
     pass
 
+
 try:
     import toml
 
+    @str2pathlib
     def read_toml(filename: File) -> JsonSerializable:
         """Reads TOML file. analogue to `read_json`"""
         with open(filename) as file:
             return toml.load(file)
 
+    @str2pathlib
     def write_toml(data: JsonSerializable, filename: File) -> File:
         """Writes YAML file. analogue to `write_json`"""
         with open(filename, "w") as file:

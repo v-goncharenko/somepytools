@@ -7,12 +7,12 @@ from typing import Any, Dict, Generic, List, TypeVar, Union
 
 
 # Path wich is expected to be directory (dir.is_dir() == True)
-Directory = TypeVar("Directory", bound=Path)
+Directory = Path
 # Path wich is expected to be file (dir.is_dir() == False)
-File = TypeVar("File", bound=Path)
+File = Path
 
-# https://github.com/python/typing/issues/182
-JsonSerializable = TypeVar("JsonSerializable", bound=Union[List[Any], Dict[Any, Any]])
+# No exact type for this, so use crutch, more info: https://github.com/python/typing/issues/182
+JsonSerializable = Union[List[Any], Dict[Any, Any]]
 
 # This is supposed to be some data type for multidimensional array libraries as numpy or torch
 Dtype = TypeVar("Dtype")
@@ -35,9 +35,9 @@ try:
     import torch
 
     # Hardware type for torch
-    Device = TypeVar("Device", bound=torch.device)
+    Device = torch.device
     # Weakened version accepting string as well as Device
-    LooseDevice = TypeVar("Device", str, torch.device)
+    LooseDevice = Union[str, torch.device]
     Model = torch.nn.Module
 
     class Tensor(torch.Tensor, Generic[Dtype]):
