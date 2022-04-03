@@ -101,7 +101,7 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 numpy = [
-    {version = ">=1.21.2", markers = "python_version >= \"3.6\" and platform_system == \"Darwin\" and platform_machine == \"arm64\""},
+    {version = ">=1.21.2", markers = "python_version >= \"3.10\" or python_version >= \"3.6\" and platform_system == \"Darwin\" and platform_machine == \"arm64\""},
     {version = ">=1.19.3", markers = "python_version >= \"3.6\" and platform_system == \"Linux\" and platform_machine == \"aarch64\" or python_version >= \"3.9\""},
     {version = ">=1.14.5", markers = "python_version >= \"3.7\""},
     {version = ">=1.17.3", markers = "python_version >= \"3.8\""},
@@ -264,8 +264,8 @@ all = ["PyYAML", "toml", "numpy", "opencv-python-headless", "torch"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = "~3.9"
-content-hash = "8ad9831d568486d29dc669615caee5c1b538bb9a4821f8f39e29ca1a15c22056"
+python-versions = ">=3.8"
+content-hash = "aad4bd21ebdbd9d1b881dbb09dc1e6397c2c2a3b3df31c79d4eaa283c4edf71d"
 
 [metadata.files]
 atomicwrites = [
