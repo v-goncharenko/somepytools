@@ -2,12 +2,11 @@ import shutil
 from functools import wraps
 from inspect import getfullargspec
 from pathlib import Path
-from typing import get_args
 from urllib.request import urlopen
 from zipfile import ZipFile
 
 from .constants import SIZE_CONSTANTS
-from .types import Directory, File, Union
+from .typing import Directory, File, get_args
 
 
 def str2pathlib(func):
@@ -80,21 +79,15 @@ def extract_zip(zip_path: File, save_dir: Directory):
 
 
 @str2pathlib
-def cp(
-    source: Union[File, Directory],
-    dest: Union[File, Directory],
-    create_dir: bool = True,
-) -> Path:
+def cp(source: Path, dest: Path, parents: bool = True) -> Path:
     """Copies file or folder to destination for both strings and pathlib objects
 
     Unfortunately pathlib doesn't have a native copying function =(((
     """
-    source, dest = Path(source), Path(dest)
-
     if source.is_dir():
         copied = shutil.copytree(source, dest, dirs_exist_ok=True)
     else:
-        if create_dir:
+        if parents:
             if dest.is_dir():
                 dest.mkdir(exist_ok=True, parents=True)
             else:
@@ -103,9 +96,12 @@ def cp(
     return Path(copied)
 
 
+@str2pathlib
 def rm_r(folder: Directory):
-    """Emulates `rm -r <folder>` command"""
-    folder = Path(folder)
+    """Emulates `rm -r <folder>` command
+
+    Ignores not existing directory
+    """
     if not folder.exists():
         return
     shutil.rmtree(folder)
