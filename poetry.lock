@@ -259,10 +259,13 @@ six = ">=1.9.0,<2"
 docs = ["proselint (>=0.10.2)", "sphinx (>=3)", "sphinx-argparse (>=0.2.5)", "sphinx-rtd-theme (>=0.4.3)", "towncrier (>=21.3)"]
 testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", "pytest (>=4)", "pytest-env (>=0.6.2)", "pytest-freezegun (>=0.4.1)", "pytest-mock (>=2)", "pytest-randomly (>=1)", "pytest-timeout (>=1)", "packaging (>=20.0)"]
 
+[extras]
+all = ["PyYAML", "toml", "numpy", "opencv-python-headless", "torch"]
+
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.9"
-content-hash = "1c3bcbf7d28194ee6261d38dc5b74791b5c18bcee2266d0a8611e56f8c8a0da3"
+content-hash = "8ad9831d568486d29dc669615caee5c1b538bb9a4821f8f39e29ca1a15c22056"
 
 [metadata.files]
 atomicwrites = [
