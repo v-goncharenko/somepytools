@@ -6,7 +6,6 @@ authors = ["Vladilav Goncharenko <vladislav.goncharenko@phystech.edu>"]
 maintainers = ["Vladislav Goncharenko <vladislav.goncharenko@phystech.edu>"]
 readme = "README.md"
 repository = "https://github.com/v-goncharenko/somepytools"
-documentation = "TBD"
 keywords = ["tools", "utilities", "python", "torch", "opencv"]
 license = "Apache-2.0"
 
