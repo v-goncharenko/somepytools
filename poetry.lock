@@ -206,7 +206,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 name = "toml"
 version = "0.10.2"
 description = "Python Library for Tom's Obvious, Minimal Language"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
@@ -232,7 +232,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.9"
-content-hash = "6ae37a34659dfcecf7e0a8f573b373a71ef98f408df93527bb45156aca737e98"
+content-hash = "ff90029821fd904a76a74971e9482aa6ea6fdf60702f8ca3337b6083a06ae794"
 
 [metadata.files]
 atomicwrites = [
