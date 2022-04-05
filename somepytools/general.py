@@ -6,48 +6,69 @@ from urllib.request import urlopen
 from zipfile import ZipFile
 
 from .constants import SIZE_CONSTANTS
-from .typing import Directory, File, get_args
+from .typing import Any, Directory, File, get_args
 
 
 def str2pathlib(func):
-    """Decorator for wrapping loose-path function's arguments
+    """Decorator to convert string inputs to Path when they are annotated as Path
 
-    To escape using Path("/some/string") for all functions arguments with types
-    LoseFile and LoseDirectory, decorator wraps this arguments with pathlib's Path
+    Allows to write decorated function as if you always have Path object as input
+        but use this function with string input variables (see Example section).
+
+    Under the hood it converts all input variables annotated as Path
+        and having type str to Path objects.
 
     Example:
-        from .utils import str2pathlib
-        from .types import File
+        from pathlib import Path
 
         @str2pathlib
-        def my_func(source: File):
+        def my_func(source: Path):
             dest = source / "my_dir"
             dest.mkdir()
             return dest
 
-        my_func("/home/user")
+        my_func("~/home/user")
 
-        >>> PosixPath('/home/user/my_dir')
+        >>> PosixPath('~/home/user/my_dir')
     """
+
+    def str_to_path(item: Any) -> Any:
+        if isinstance(item, str):
+            return Path(item)
+        return item
+
     full_arg_spec = getfullargspec(func)
+    all_defaults = full_arg_spec.defaults or ()
+
+    path_args = []
+    for arg_name, arg_type in full_arg_spec.annotations.items():
+        if (arg_type != Path and Path not in get_args(arg_type)) or arg_name == "return":
+            continue
+
+        if arg_name in full_arg_spec.kwonlyargs:
+            index = float("inf")
+            needs_default = True
+            default = full_arg_spec.kwonlydefaults[arg_name]
+        else:
+            index = full_arg_spec.args.index(arg_name)
+            def_index = index - len(full_arg_spec.args) + len(all_defaults)
+            needs_default = def_index >= 0
+            default = full_arg_spec.defaults[def_index] if needs_default else None
+
+        path_args.append((index, arg_name, needs_default, str_to_path(default)))
 
     @wraps(func)
     def wrapper(*args, **kwargs):
         args = list(args)
-        for arg_name, arg_type in full_arg_spec.annotations.items():
-            if arg_name == "return":
-                continue
-            if arg_type == Path or Path in get_args(arg_type):
-                if arg_name in kwargs:
-                    if kwargs[arg_name] is None:
-                        continue
 
-                    kwargs[arg_name] = Path(kwargs[arg_name])
-                else:
-                    arg_index = full_arg_spec.args.index(arg_name)
-                    # TODO fix default args processing
-                    if len(args) > arg_index and args[arg_index]:
-                        args[arg_index] = Path(args[arg_index])
+        for index, arg_name, needs_default, default in path_args:
+            if arg_name in kwargs:
+                kwargs[arg_name] = str_to_path(kwargs[arg_name])
+            elif index < len(args):  # this was passed as arg
+                args[index] = str_to_path(args[index])
+            elif needs_default:
+                kwargs[arg_name] = default
+
         return func(*args, **kwargs)
 
     return wrapper
