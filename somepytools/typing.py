@@ -3,7 +3,7 @@
 from numbers import Number
 from pathlib import Path
 from typing import *  # noqa: F403
-from typing import Any, Dict, Generic, List, TypeVar, Union
+from typing import Any, Dict, Generic, List, Sequence, TypeVar, Union
 
 
 # Path wich is expected to be directory (dir.is_dir() == True)
@@ -16,6 +16,8 @@ JsonSerializable = Union[List[Any], Dict[Any, Any]]
 
 # This is supposed to be some data type for multidimensional array libraries as numpy or torch
 Dtype = TypeVar("Dtype")
+
+Bbox = Sequence[Number]
 
 try:
     import numpy as np

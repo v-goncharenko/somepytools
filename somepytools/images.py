@@ -2,12 +2,17 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from .general import str2pathlib
-from .typing import Array, File, Iterable, List, Union
+from .typing import Array, Bbox, File, Iterable, Sequence, Union
 
 
 try:
     import cv2
+except ModuleNotFoundError:
+    pass
 
+try:
+    import matplotlib.patches as patches
+    import matplotlib.pyplot as plt
 except ModuleNotFoundError:
     pass
 
@@ -55,13 +60,13 @@ def open_video(video_path: File, mode: str = "r", *args):
 
 @str2pathlib
 def write_video(
-    images: List[Array],
+    images: Sequence[Array],
     video_path: File,
     codec_code: str = "XVID",
     fps: int = 2,
     is_color=True,
 ):
-    """
+    """Writes images to video file by given path
 
     Args:
         images: List of RGB or binary images.
@@ -103,3 +108,62 @@ def frames(video: Union[File, cv2.VideoCapture], rgb: bool = True) -> Iterable[A
             if rgb:
                 frame = frame[:, :, ::-1]
             yield frame
+
+
+@str2pathlib
+def get_meta(video_path: File, count_frames: bool = True):
+    """Extracts main video meta data as dict
+
+    Eliminates a need in ugly OpenCV constants
+
+    Args:
+        video_path: video to get info from
+        count_frames: if True - reads frames from video and count them
+            Warning: can be long to execute on big files
+    """
+    with open_video(video_path) as video:
+        real_frame_count = sum(1 for _ in frames(video)) if count_frames else None
+        return {
+            "width": video.get(cv2.CAP_PROP_FRAME_WIDTH),
+            "height": video.get(cv2.CAP_PROP_FRAME_HEIGHT),
+            "fps": video.get(cv2.CAP_PROP_FPS),
+            "fourcc": video.get(cv2.CAP_PROP_FOURCC),
+            "frame_count_meta": video.get(cv2.CAP_PROP_FRAME_COUNT),
+            "frame_count": real_frame_count,
+        }
+
+
+def plot_image(
+    image: Array,
+    title: str = "",
+    boxes: Sequence[Bbox] = (),
+    figsize: tuple = (20, 5),
+    opencv_format: bool = False,
+    extra_operations=lambda: None,
+):
+    """Plots image with optional bboxes on it
+
+    Args:
+        boxes: list of bboxes in 'tlbr' format
+            remember that matplotlib's coordinates x is horizontal, y is vertical
+        opencv_format: channels sequence from opencv (BGR), so it need to be reversed
+        extra_operations: lambda with everything you want to do to plt
+    """
+    if opencv_format:  # to reverse colours from BGR
+        image = image[..., ::-1]
+
+    plt.figure(figsize=figsize, constrained_layout=True)
+    plt.imshow(image)
+    plt.title(title)
+    for box in boxes:
+        rect = patches.Rectangle(
+            (box[0], box[1]),
+            box[2] - box[0],
+            box[3] - box[1],
+            linewidth=1,
+            edgecolor="r",
+            facecolor="none",
+        )
+        plt.gca().add_patch(rect)
+    extra_operations()
+    plt.show()
