@@ -6,7 +6,8 @@ Hope one time it will have a documentation published, but not for now )
 
 ## Installation
 
-It's already published on PyPI, so simply
+It's already [published on PyPI](https://pypi.org/project/somepytools/), so
+simply
 
 `pip install somepytools`
 
