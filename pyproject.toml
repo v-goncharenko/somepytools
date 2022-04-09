@@ -18,9 +18,10 @@ toml = {version = "^0.10.2", optional = true}
 numpy = {version = "^1.22.3", optional = true}
 opencv-python-headless = {version = "^4.5.5", optional = true}
 torch = {version = "^1.11.0", optional = true}
+matplotlib = {version = "^3.5.1", optional = true}
 
 [tool.poetry.extras]
-all = ["PyYAML", "toml", "numpy", "opencv-python-headless", "torch"]
+all = ["PyYAML", "toml", "numpy", "opencv-python-headless", "torch", "matplotlib"]
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.16.0"
