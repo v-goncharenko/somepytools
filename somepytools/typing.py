@@ -14,6 +14,9 @@ File = Path
 # No exact type for this, so use crutch, more info: https://github.com/python/typing/issues/182
 JsonSerializable = Union[List[Any], Dict[Any, Any]]
 
+# Format to annotate flags coming from OpenCV (not usual integers)
+OpencvFlag = int
+
 # This is supposed to be some data type for multidimensional array libraries as numpy or torch
 Dtype = TypeVar("Dtype")
 
@@ -31,7 +34,7 @@ try:
         pass
 
 except ModuleNotFoundError:
-    pass
+    Array = None
 
 try:
     import torch
@@ -51,4 +54,7 @@ try:
         pass
 
 except ModuleNotFoundError:
-    pass
+    Device = None
+    LooseDevice = None
+    Model = None
+    Tensor = None
