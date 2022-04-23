@@ -2,11 +2,12 @@ import shutil
 from functools import wraps
 from inspect import getfullargspec
 from pathlib import Path
+from urllib.parse import urlparse
 from urllib.request import urlopen
 from zipfile import ZipFile
 
 from .constants import SIZE_CONSTANTS
-from .typing import Any, Directory, File, get_args
+from .typing import Any, Directory, File, Optional, get_args
 
 
 def str2pathlib(func):
@@ -75,13 +76,14 @@ def str2pathlib(func):
 
 
 @str2pathlib
-def download_url(url: str, save_path: File):
+def download_url(url: str, save_path: Optional[File] = None):
     """Downloads and saves data from url
 
     Args:
         url: address of file to download
         save_path: file path to save to
     """
+    save_path = save_path or urlparse(url).path.split("/")[-1]
     with urlopen(url) as response:
         with open(save_path, "wb") as file:
             file.write(response.read())
