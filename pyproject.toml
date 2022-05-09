@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "somepytools"
-version = "1.2.1"
+version = "1.2.2"
 description = "Just some useful Python tools"
 authors = ["Vladilav Goncharenko <vladislav.goncharenko@phystech.edu>"]
 maintainers = ["Vladislav Goncharenko <vladislav.goncharenko@phystech.edu>"]
