@@ -7,7 +7,7 @@ from urllib.request import urlopen
 from zipfile import ZipFile
 
 from .constants import SIZE_CONSTANTS
-from .typing import Any, Directory, File, Optional, get_args
+from .typing import Any, Directory, File, Union, get_args
 
 
 def str2pathlib(func):
@@ -76,17 +76,28 @@ def str2pathlib(func):
 
 
 @str2pathlib
-def download_url(url: str, save_path: Optional[File] = None):
+def download_url(url: str, save_path: Union[File, Directory, None] = None) -> File:
     """Downloads and saves data from url
 
     Args:
         url: address of file to download
-        save_path: file path to save to
+        save_path: file or directory path to save to.
+            If filename is not provided, it is taken from url.
+            If directory is not provided, file saved to current directory.
+
+    Returns:
+        Actual path to downloaded file
     """
-    save_path = save_path or urlparse(url).path.split("/")[-1]
+    if save_path is None:
+        save_path = Path(urlparse(url).path.split("/")[-1])
+    elif save_path.is_dir():
+        save_path = save_path / urlparse(url).path.split("/")[-1]
+
     with urlopen(url) as response:
         with open(save_path, "wb") as file:
             file.write(response.read())
+
+    return save_path
 
 
 @str2pathlib
