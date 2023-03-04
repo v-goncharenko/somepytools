@@ -1,13 +1,15 @@
 import shutil
+from datetime import date, datetime, timedelta
 from functools import wraps
 from inspect import getfullargspec
 from pathlib import Path
+from typing import Any, Iterator, Union, get_args
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from zipfile import ZipFile
 
 from .constants import SIZE_CONSTANTS
-from .typing import Any, Directory, File, Union, get_args
+from .typing import Directory, File
 
 
 def str2pathlib(func):
@@ -160,3 +162,26 @@ def dir_size(
             src = f.resolve()
             total_size += dir_size(src, units)
     return total_size
+
+
+def daterange(
+    start_date: Union[str, datetime],
+    end_date: Union[str, datetime],
+    *,
+    include_last: bool = False,
+) -> Iterator[date]:
+    """Generates dates in requested range
+
+    Note:
+        Date format is ISO: 'yyyy-mm-dd'
+    """
+    if isinstance(start_date, str):
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+    if isinstance(end_date, str):
+        end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+    days = (end_date - start_date).days
+    if include_last:
+        days += 1
+
+    for i in range(days):
+        yield start_date + timedelta(i)

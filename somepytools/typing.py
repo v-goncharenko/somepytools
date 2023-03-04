@@ -2,7 +2,6 @@
 
 from numbers import Number
 from pathlib import Path
-from typing import *  # noqa: F403
 from typing import Any, Dict, Generic, List, Sequence, TypeVar, Union
 
 

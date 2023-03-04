@@ -1,8 +1,9 @@
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Iterable, Sequence, Union
 
 from .general import str2pathlib
-from .typing import Array, File, Iterable, Sequence, Union
+from .typing import Array, File
 
 
 try:

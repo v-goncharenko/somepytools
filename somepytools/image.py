@@ -1,4 +1,6 @@
-from .typing import Array, Bbox, Number, OpencvFlag, Optional, Sequence
+from typing import Optional, Sequence
+
+from .typing import Array, Bbox, Number, OpencvFlag
 
 
 try:
