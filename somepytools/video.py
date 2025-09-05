@@ -42,7 +42,7 @@ def open_video(video_path: File, mode: str = "r", *args):
     elif mode == "w":
         video = cv2.VideoWriter(video_path.as_posix(), *args)
     else:
-        raise ValueError(f'Incorrect open mode "{mode}"; "r" or "w" expected!')
+        raise ValueError(f'Incorrect open mode {mode!r}; "r" or "w" expected!')
 
     if not video.isOpened():
         raise ValueError(f"Video {video_path} is not opened!")
