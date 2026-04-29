@@ -1,5 +1,6 @@
 """Single place to define (and redefine) custom types."""
 
+import os
 from collections.abc import Sequence
 from numbers import Number
 from pathlib import Path
@@ -11,6 +12,8 @@ import numpy as np
 Directory = Path
 # Path which is expected to be file (dir.is_dir() == False)
 File = Path
+# Something that looks like a path on OS
+PathLike = str | os.PathLike
 
 # No exact type for this, so use crutch, more info: https://github.com/python/typing/issues/182
 JsonSerializable = list[Any] | dict[Any, Any]
