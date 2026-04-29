@@ -1,9 +1,10 @@
 import shutil
+from collections.abc import Iterator
 from datetime import date, datetime, timedelta
 from functools import wraps
 from inspect import getfullargspec
 from pathlib import Path
-from typing import Any, Iterator, Union, get_args
+from typing import Any, get_args
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from zipfile import ZipFile
@@ -12,8 +13,8 @@ from .constants import SIZE_CONSTANTS
 from .typing import Directory, File
 
 
-def str2pathlib(func):
-    """Decorator to convert string inputs to Path when they are annotated as Path
+def str2pathlib(func):  # noqa: C901
+    """Decorator to convert string inputs to Path when they are annotated as Path.
 
     Allows to write decorated function as if you always have Path object as input
         but use this function with string input variables (see Example section).
@@ -78,8 +79,8 @@ def str2pathlib(func):
 
 
 @str2pathlib
-def download_url(url: str, save_path: Union[File, Directory, None] = None) -> File:
-    """Downloads and saves data from url
+def download_url(url: str, save_path: File | Directory | None = None) -> File:
+    """Downloads and saves data from url.
 
     Args:
         url: address of file to download
@@ -95,19 +96,18 @@ def download_url(url: str, save_path: Union[File, Directory, None] = None) -> Fi
     elif save_path.is_dir():
         save_path = save_path / urlparse(url).path.split("/")[-1]
 
-    with urlopen(url) as response:
-        with open(save_path, "wb") as file:
-            file.write(response.read())
+    with urlopen(url) as response, save_path.open("wb") as file:
+        file.write(response.read())
 
     return save_path
 
 
 @str2pathlib
 def extract_zip(zip_path: File, save_dir: Directory):
-    """Unzips archive
+    """Unzips archive.
 
     Args:
-        zip_file_path: path to *.zip file to unzip
+        zip_path: path to *.zip file to unzip
         save_dir:  path for files and folders to save
     """
     with ZipFile(zip_path) as zip_file:
@@ -116,7 +116,7 @@ def extract_zip(zip_path: File, save_dir: Directory):
 
 @str2pathlib
 def cp(source: Path, dest: Path, parents: bool = True) -> Path:
-    """Copies file or folder to destination for both strings and pathlib objects
+    """Copies file or folder to destination for both strings and pathlib objects.
 
     Unfortunately pathlib doesn't have a native copying function =(((
     """
@@ -134,7 +134,7 @@ def cp(source: Path, dest: Path, parents: bool = True) -> Path:
 
 @str2pathlib
 def rm_r(folder: Directory):
-    """Emulates `rm -r <folder>` command
+    """Emulates `rm -r <folder>` command.
 
     Ignores not existing directory
     """
@@ -150,7 +150,7 @@ def dir_size(
     """Calculates the total size of files within the directory.
 
     Args:
-        root: target directory
+        directory: target directory
         units: size units (from .constants.SIZE_CONSTANTS.keys())
         check_softlinks: flag indicating whether to count files by links or not
     """
@@ -165,12 +165,12 @@ def dir_size(
 
 
 def daterange(
-    start_date: Union[str, datetime],
-    end_date: Union[str, datetime],
+    start_date: str | datetime,
+    end_date: str | datetime,
     *,
     include_last: bool = False,
 ) -> Iterator[date]:
-    """Generates dates in requested range
+    """Generates dates in requested range.
 
     Note:
         Date format is ISO: 'yyyy-mm-dd'

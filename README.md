@@ -4,6 +4,7 @@
 [![Downloads](https://pepy.tech/badge/somepytools)](https://pepy.tech/project/somepytools)
 [![License: Apache](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/v-goncharenko/somepytools/blob/master/LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Docs style: google](https://img.shields.io/badge/%20style-google-3666d6.svg)](https://google.github.io/styleguide/pyguide.html#s3.8-comments-and-docstrings)
 
 Here I gather functions that are handful in Data Science & Machine Learning
 projects.
@@ -19,7 +20,7 @@ It's [published on PyPI](https://pypi.org/project/somepytools/), so simply
 
 ## Reference
 
-Modules inclues:
+Modules includes:
 
 - extended typing module
 - common read-write operations for configs

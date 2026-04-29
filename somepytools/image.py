@@ -1,34 +1,28 @@
-from typing import Optional, Sequence
+from collections.abc import Sequence
+
+import cv2
+import matplotlib.pyplot as plt
+from matplotlib import patches
 
 from .typing import Array, Bbox, Number, OpencvFlag
 
 
-try:
-    import cv2
-except ModuleNotFoundError:
-    pass
-
-
-try:
-    import matplotlib.patches as patches
-    import matplotlib.pyplot as plt
-except ModuleNotFoundError:
-    pass
-
-
 def resize(
     image: Array,
-    inter: Optional[OpencvFlag] = None,
+    inter: OpencvFlag | None = None,
     *,
-    height: Optional[Number] = None,
-    width: Optional[Number] = None,
+    height: Number | None = None,
+    width: Number | None = None,
 ) -> Array:
-    """Smart resizing with OpenCV under the hood
+    """Smart resizing with OpenCV under the hood.
 
     Args:
-        interp: Interpolation flags, [see here](https://docs.opencv.org/4.5.5/da/d54/group__imgproc__transform.html#ga5bb5a1fea74ea38e1a5445ca803ff121)
+        image: an image to resize
+        inter: Interpolation flags, [see here](https://docs.opencv.org/4.5.5/da/d54/group__imgproc__transform.html#ga5bb5a1fea74ea38e1a5445ca803ff121)
+        height: required height
+        width: required width
 
-    Retruns:
+    Returns:
         resized image (new one)
     """
     inter = inter or cv2.INTER_AREA
@@ -56,11 +50,14 @@ def plot_image(
     opencv_format: bool = False,
     extra_operations=lambda: None,
 ):
-    """Plots image with optional bboxes on it
+    """Plots image with optional bboxes on it.
 
     Args:
+        image: an image to plot
+        title: title for plotter imgae
         boxes: list of bboxes in 'tlbr' format
             remember that matplotlib's coordinates x is horizontal, y is vertical
+        figsize: size in inches e.g. (12, 6)
         opencv_format: channels sequence from opencv (BGR), so it need to be reversed
         extra_operations: lambda with everything you want to do to plt
     """

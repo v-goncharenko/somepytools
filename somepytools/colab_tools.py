@@ -1,6 +1,6 @@
 # duplicates in sheets formula: =COUNTIF(A:A, A1) > 1
 
-from typing import Any, Union
+from typing import Any
 
 import gspread
 import polars as pl
@@ -14,14 +14,15 @@ from pydrive2.drive import GoogleDrive
 def auth_gspread() -> gspread.client.Client:
     auth.authenticate_user()
     creds, _ = default()
-    gc = gspread.authorize(creds)
-    return gc
+    return gspread.authorize(creds)
 
 
 def auth_pydrive(dummy_call: bool = False) -> GoogleDrive:
-    """
+    """Get pydrive object.
+
     Args:
-        dummy_call: needed if you want to perform non PyDrive2 native operations with service object
+        dummy_call: needed if you want to perform non PyDrive2 native operations
+            with service object
     """
     auth.authenticate_user()
     gauth = GoogleAuth()
@@ -37,13 +38,12 @@ def auth_pydrive(dummy_call: bool = False) -> GoogleDrive:
 
 
 def sheets(gc, spreadsheet_id: str) -> dict[str, Any]:
-    """"""
     spreadsheet = gc.open_by_key(spreadsheet_id)
     return {ws.title: ws for ws in spreadsheet}
 
 
 def worksheet2pl(worksheet, *, with_index: bool = True) -> pl.DataFrame:
-    """Transform Google worksheet to polars DataFrame"""
+    """Transform Google worksheet to polars DataFrame."""
     all_vals = worksheet.get(
         major_dimension=gspread.utils.Dimension.cols,
         value_render_option=gspread.utils.ValueRenderOption.unformatted,
@@ -61,7 +61,7 @@ def worksheet2pl(worksheet, *, with_index: bool = True) -> pl.DataFrame:
 
 
 def number2letters(q: int) -> str:
-    """Helper function to convert number of column to its index, like 10 -> 'A'"""
+    """Helper function to convert number of column to its index, like 10 -> 'A'."""
     q = q - 1
     result = ""
 
@@ -74,23 +74,23 @@ def number2letters(q: int) -> str:
 
 
 def colrow2range(col: int, row: int) -> str:
-    """Helper function converting coordinates into sheets range string representation"""
+    """Helper function converting coordinates into sheets range string representation."""
     return number2letters(col) + str(row)
 
 
 def write_table(
     ws,
-    table: Union[list, pl.DataFrame],
+    table: list | pl.DataFrame,
     left: int = 1,
     top: int = 1,
     *,
     with_headers: bool = True,
 ):
-    """Updates the google spreadsheet with given table
+    """Updates the google spreadsheet with given table.
 
     Args:
         ws: gspread.models.Worksheet object
-        rows: a table (list of lists) or polars data frame (will be converted internally)
+        table: a table (list of lists) or polars data frame (will be converted internally)
         left: the number of the first column in the target document (beginning with 1)
         top: the number of first row in the target document (beginning with 1)
         with_headers: in case of rows as pl.DataFrame to take headers or not
@@ -119,10 +119,11 @@ def write_table(
 
 
 def copy_drive_file(drive: GoogleDrive, source: str, dest_dir: str, dest_fname: str):
-    """Copy Google Drive file
+    """Copy Google Drive file.
 
     Args:
-        source: id of the file to be copyed
+        drive: a google drive object to use
+        source: id of the file to be copied
         dest_dir: id of directory to put copy to
         dest_fname: name of restulting document
     """

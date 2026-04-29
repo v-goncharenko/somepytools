@@ -1,20 +1,18 @@
+from collections.abc import Iterable, Sequence
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterable, Sequence, Union
+from typing import Union
+
+import cv2
 
 from .general import str2pathlib
 from .typing import Array, File
-
-try:
-    import cv2
-except ModuleNotFoundError:
-    pass
 
 
 @contextmanager
 @str2pathlib
 def open_video(video_path: File, mode: str = "r", *args):
-    """Context manager to work with cv2 videos
+    """Context manager to work with cv2 videos.
 
     Mimics python's standard `open` function
 
@@ -60,7 +58,7 @@ def write_video(
     fps: int = 2,
     is_color=True,
 ):
-    """Writes images to video file by given path
+    """Writes images to video file by given path.
 
     Args:
         images: List of RGB or binary images.
@@ -68,20 +66,19 @@ def write_video(
         codec_code: FourCC - a 4-byte code used to specify the video codec.
         fps: Framerate of the created video stream.
         is_color: RGB images or not.
-
     """
     fourcc = cv2.VideoWriter_fourcc(*codec_code)
-    height, width, channels = images[0].shape
+    height, width, _ = images[0].shape
     with open_video(video_path, "w", fourcc, fps, (width, height), is_color) as capture:
         for frame in images:
             if is_color:
-                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)  # noqa: PLW2901
             capture.write(frame)
 
 
 @str2pathlib
 def frames(video: Union[File, "cv2.VideoCapture"], rgb: bool = True) -> Iterable[Array]:
-    """Generator of frames from the video provided
+    """Generator of frames from the video provided.
 
     Args:
         video: either Path or Video capture to read frames from
@@ -91,7 +88,7 @@ def frames(video: Union[File, "cv2.VideoCapture"], rgb: bool = True) -> Iterable
     Yields:
         Frames of video in (H, W, C) format
     """
-    if isinstance(video, Path) or isinstance(video, str):
+    if isinstance(video, (Path, str)):
         with open_video(video) as capture:
             yield from frames(capture, rgb)
     else:
@@ -106,7 +103,7 @@ def frames(video: Union[File, "cv2.VideoCapture"], rgb: bool = True) -> Iterable
 
 @str2pathlib
 def get_meta(video_path: File, count_frames: bool = True):
-    """Extracts main video meta data as dict
+    """Extracts main video meta data as dict.
 
     Eliminates a need in ugly OpenCV constants
 

@@ -3,10 +3,10 @@ name = "somepytools"
 version = "1.5.0"
 description = "Just some useful Python tools"
 authors = [
-    { name = "Vladilav Goncharenko", email = "uptrickster@gmail.com" },
+  { name = "Vladilav Goncharenko", email = "uptrickster@gmail.com" },
 ]
 maintainers = [
-    { name = "Vladilav Goncharenko", email = "uptrickster@gmail.com" },
+  { name = "Vladilav Goncharenko", email = "uptrickster@gmail.com" },
 ]
 readme = "README.md"
 urls.Repository = "https://github.com/v-goncharenko/somepytools"
@@ -16,70 +16,79 @@ license = "Apache-2.0"
 requires-python = ">=3.12"
 
 dependencies = [
-    "numpy>=2.4.4",
+  "numpy>=2.4.4",
 ]
 
 [project.optional-dependencies]
 all = [
-    "matplotlib>=3.10.9",
-    "opencv-python-headless>=4.13.0.92",
-    "polars>=1.40.1",
-    "pyyaml>=6.0.3",
-    "toml>=0.10.2",
-    "torch>=2.11.0",
+  "matplotlib>=3.10.9",
+  "opencv-python-headless>=4.13.0.92",
+  "polars>=1.40.1",
+  "pyyaml>=6.0.3",
+  "toml>=0.10.2",
+  "torch>=2.11.0",
 ]
 
 [dependency-groups]
 dev = [
-    "pre-commit>=4.6.0",
-    "pytest>=9.0.3",
+  "pre-commit>=4.6.0",
+  "pytest>=9.0.3",
 ]
 
 [tool.ruff]
 line-length = 95
+fix = true
 format = { docstring-code-format = true }
 
 [tool.ruff.lint]
 select = [
-    # isort
-    "I",
-    # pycodestyle
-    "E", "W",
-    # Pyflakes
-    "F",
-    # pyupgrade
-    "UP",
-    # flake8-bugbear
-    "B",
-    # flake8-simplify
-    "SIM",
-    # flake8-builtins
-    "A",
-    # flake8-return
-    "RET",
-    # flake8-use-pathlib
-    "PTH",
-    # flynt
-    "FLY",
-    # mccabe
-    "C90",
-    # NumPy-specific rules
-    "NPY",
-    # pep8-naming
-    "N",
-    # Ruff-specific rules
-    "RUF",
-    # Pylint - very strict, may be use when have enough time
-    "PL",
-    # refurb - also may be overwhelming
-    "FURB",
+  # isort
+  "I",
+  # pycodestyle
+  "E",
+  "W",
+  # Pyflakes
+  "F",
+  # pyupgrade
+  "UP",
+  # flake8-bugbear
+  "B",
+  # flake8-simplify
+  "SIM",
+  # flake8-builtins
+  "A",
+  # flake8-return
+  "RET",
+  # flake8-use-pathlib
+  "PTH",
+  # flynt
+  "FLY",
+  # mccabe
+  "C90",
+  # NumPy-specific rules
+  "NPY",
+  # pep8-naming
+  "N",
+  # Ruff-specific rules
+  "RUF",
+  # Pylint - very strict, may be use when have enough time
+  "PL",
+  # refurb - also may be overwhelming
+  "FURB",
+  # Documentation section
+  # pydocstyle
+  "D",
+  # pydoclint, still experimental
+  # "DOC",
 ]
+ignore = ["D10"]
+pydocstyle.convention = "google"
+pylint.max-args = 6
 
-pycodestyle = { max-doc-length = 105 }
-
-# [tool.ruff.lint.per-file-ignores]
-# "__init__.py" = ["E402"]
-# "**/{tests,docs,tools}/*" = ["E402"]
+[tool.docformatter]
+wrap-summaries = 95
+wrap-descriptions = 95
+black = true
 
 [tool.uv.build-backend]
 module-name = "somepytools"

@@ -1,17 +1,19 @@
-"""Single place to define (and redefine) custom types"""
+"""Single place to define (and redefine) custom types."""
 
+from collections.abc import Sequence
 from numbers import Number
 from pathlib import Path
-from typing import Any, Dict, Generic, List, Sequence, TypeVar, Union
+from typing import Any, TypeVar
 
+import numpy as np
 
-# Path wich is expected to be directory (dir.is_dir() == True)
+# Path which is expected to be directory (dir.is_dir() == True)
 Directory = Path
-# Path wich is expected to be file (dir.is_dir() == False)
+# Path which is expected to be file (dir.is_dir() == False)
 File = Path
 
 # No exact type for this, so use crutch, more info: https://github.com/python/typing/issues/182
-JsonSerializable = Union[List[Any], Dict[Any, Any]]
+JsonSerializable = list[Any] | dict[Any, Any]
 
 # Format to annotate flags coming from OpenCV (not usual integers)
 OpencvFlag = int
@@ -20,20 +22,12 @@ OpencvFlag = int
 Dtype = TypeVar("Dtype")
 
 Bbox = Sequence[Number]
+"""Numpy array of type `Dtype`.
 
-try:
-    import numpy as np
+`Dtype` can be any regular numeric type such as `int`, `bool` or numpy types as `np.float32`
+"""
 
-    class Array(np.ndarray, Generic[Dtype]):
-        """Numpy array of type `Dtype`
-
-        `Dtype` can be any regular numeric type such as `int`, `bool` or numpy types as `np.float32`
-        """
-
-        pass
-
-except ModuleNotFoundError:
-    Array = None
+Array = np.ndarray
 
 try:
     import torch
@@ -41,16 +35,15 @@ try:
     # Hardware type for torch
     Device = torch.device
     # Weakened version accepting string as well as Device
-    LooseDevice = Union[str, torch.device]
+    LooseDevice = str | torch.device
     Model = torch.nn.Module
+    """Torch tensor of type `Dtype`.
 
-    class Tensor(torch.Tensor, Generic[Dtype]):
-        """Torch tensor of type `Dtype`
+    `Dtype` can be any regular numeric type such as `int`, `bool` or torch types as
+    `torch.float32`
+    """
 
-        `Dtype` can be any regular numeric type such as `int`, `bool` or torch types as `torch.float32`
-        """
-
-        pass
+    Tensor = torch.Tensor
 
 except ModuleNotFoundError:
     Device = None

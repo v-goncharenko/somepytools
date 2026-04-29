@@ -3,7 +3,6 @@ from pathlib import Path
 import somepytools
 from somepytools.io import read_toml
 
-
 curr_dir = Path(__file__).resolve().parent
 
 

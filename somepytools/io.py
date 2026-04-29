@@ -15,7 +15,7 @@ def read_json(filename: File, **kwargs) -> JsonSerializable:
     Returns:
         Data from json-file.
     """
-    with open(filename) as file:
+    with filename.open() as file:
         return json.load(file, **kwargs)
 
 
@@ -37,7 +37,7 @@ def write_json(
     """
     if not len(filename.suffix):
         filename = filename.with_suffix(".json")
-    with open(filename, "w") as file:
+    with filename.open("w") as file:
         json.dump(data, file, **kwargs)
         if newline:
             file.write("\n")
@@ -49,14 +49,20 @@ try:
 
     @str2pathlib
     def read_yaml(filename: File) -> JsonSerializable:
-        """Reads YAML file. analogue to `read_json`"""
-        with open(filename) as file:
+        """Reads YAML file.
+
+        analogue to `read_json`
+        """
+        with filename.open() as file:
             return yaml.safe_load(file)
 
     @str2pathlib
     def write_yaml(data: JsonSerializable, filename: File, **kwargs) -> File:
-        """Writes YAML file. analogue to `write_json`"""
-        with open(filename, "w") as file:
+        """Writes YAML file.
+
+        analogue to `write_json`
+        """
+        with filename.open("w") as file:
             yaml.safe_dump(data, file, **kwargs)
         return filename
 
@@ -69,14 +75,20 @@ try:
 
     @str2pathlib
     def read_toml(filename: File) -> JsonSerializable:
-        """Reads TOML file. analogue to `read_json`"""
-        with open(filename) as file:
+        """Reads TOML file.
+
+        analogue to `read_json`
+        """
+        with filename.open() as file:
             return toml.load(file)
 
     @str2pathlib
     def write_toml(data: JsonSerializable, filename: File) -> File:
-        """Writes YAML file. analogue to `write_json`"""
-        with open(filename, "w") as file:
+        """Writes YAML file.
+
+        analogue to `write_json`
+        """
+        with filename.open("w") as file:
             toml.dump(data, file)
         return filename
 
