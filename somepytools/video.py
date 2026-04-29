@@ -5,7 +5,6 @@ from typing import Iterable, Sequence, Union
 from .general import str2pathlib
 from .typing import Array, File
 
-
 try:
     import cv2
 except ModuleNotFoundError:

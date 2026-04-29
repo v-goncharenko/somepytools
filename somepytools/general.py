@@ -45,7 +45,9 @@ def str2pathlib(func):
 
     path_args = []
     for arg_name, arg_type in full_arg_spec.annotations.items():
-        if (arg_type != Path and Path not in get_args(arg_type)) or arg_name == "return":
+        if (
+            arg_type != Path and Path not in get_args(arg_type)
+        ) or arg_name == "return":
             continue
 
         if arg_name in full_arg_spec.kwonlyargs:

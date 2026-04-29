@@ -42,7 +42,8 @@ def sheets(gc, spreadsheet_id: str) -> dict[str, Any]:
     return {ws.title: ws for ws in spreadsheet}
 
 
-def worksheet2pl(worksheet):
+def worksheet2pl(worksheet, *, with_index: bool = True) -> pl.DataFrame:
+    """Transform Google worksheet to polars DataFrame"""
     all_vals = worksheet.get(
         major_dimension=gspread.utils.Dimension.cols,
         value_render_option=gspread.utils.ValueRenderOption.unformatted,
@@ -54,6 +55,8 @@ def worksheet2pl(worksheet):
     df = df.rename(df.head(1).to_dicts().pop())
     df = df.with_row_index()
     df = df.filter(pl.col("index") != 0)
+    if not with_index:
+        df = df.drop("index")
     return df
 
 
@@ -115,7 +118,7 @@ def write_table(
     ws.update_cells(cell_list)
 
 
-def copy_drive_file(drive, source: str, dest_dir: str, dest_fname: str):
+def copy_drive_file(drive: GoogleDrive, source: str, dest_dir: str, dest_fname: str):
     """Copy Google Drive file
 
     Args:
@@ -134,3 +137,9 @@ def copy_drive_file(drive, source: str, dest_dir: str, dest_fname: str):
         )
         .execute()
     )
+
+
+def worksheets(gc: gspread.client.Client, file_id: str) -> tuple:
+    spreadsheet = gc.open_by_key(file_id)
+    worksheets = {ws.title: ws for ws in spreadsheet}
+    return spreadsheet, worksheets
