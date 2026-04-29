@@ -1133,7 +1133,7 @@ wheels = [
 
 [[package]]
 name = "somepytools"
-version = "1.5.2"
+version = "1.5.3"
 source = { editable = "." }
 dependencies = [
     { name = "numpy" },
@@ -1161,7 +1161,7 @@ dev = [
 requires-dist = [
     { name = "gdown", marker = "extra == 'all'", specifier = ">=6.0.0" },
     { name = "matplotlib", marker = "extra == 'all'", specifier = ">=3.10.9" },
-    { name = "numpy", specifier = ">=2.4.4" },
+    { name = "numpy", specifier = ">=2.0.2" },
     { name = "opencv-python-headless", marker = "extra == 'all'", specifier = ">=4.13.0.92" },
     { name = "polars", marker = "extra == 'all'", specifier = ">=1.40.1" },
     { name = "pyyaml", marker = "extra == 'all'", specifier = ">=6.0.3" },

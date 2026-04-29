@@ -1,6 +1,6 @@
 [project]
 name = "somepytools"
-version = "1.5.2"
+version = "1.5.3"
 description = "Just some useful Python tools"
 authors = [
   { name = "Vladilav Goncharenko", email = "uptrickster@gmail.com" },
@@ -16,7 +16,7 @@ license = "Apache-2.0"
 requires-python = ">=3.12"
 
 dependencies = [
-  "numpy>=2.4.4",
+  "numpy>=2.0.2",
 ]
 
 [project.optional-dependencies]
