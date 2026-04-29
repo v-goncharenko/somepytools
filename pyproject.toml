@@ -1,43 +1,90 @@
-[tool.poetry]
+[project]
 name = "somepytools"
-version = "1.4.0"
+version = "1.5.0"
 description = "Just some useful Python tools"
-authors = ["Vladilav Goncharenko <vladislav.goncharenko@phystech.edu>"]
-maintainers = ["Vladislav Goncharenko <vladislav.goncharenko@phystech.edu>"]
+authors = [
+    { name = "Vladilav Goncharenko", email = "uptrickster@gmail.com" },
+]
+maintainers = [
+    { name = "Vladilav Goncharenko", email = "uptrickster@gmail.com" },
+]
 readme = "README.md"
-repository = "https://github.com/v-goncharenko/somepytools"
+urls.Repository = "https://github.com/v-goncharenko/somepytools"
+urls.PyPI = "https://pypi.org/project/somepytools/"
 keywords = ["tools", "utilities", "python", "torch", "opencv"]
 license = "Apache-2.0"
+requires-python = ">=3.12"
 
-[tool.poetry.dependencies]
-python = ">=3.9"
+dependencies = [
+    "numpy>=2.4.4",
+]
 
-PyYAML = {version = "^6.0", optional = true}
-toml = {version = "^0.10.2", optional = true}
+[project.optional-dependencies]
+all = [
+    "matplotlib>=3.10.9",
+    "opencv-python-headless>=4.13.0.92",
+    "polars>=1.40.1",
+    "pyyaml>=6.0.3",
+    "toml>=0.10.2",
+    "torch>=2.11.0",
+]
 
-numpy = {version = "^1.22.3", optional = true}
-opencv-python-headless = {version = "^4.5.5", optional = true}
-torch = {version = "^1.11.0", optional = true}
-matplotlib = {version = "^3.5.1", optional = true}
-polars = "^1.33.0"
+[dependency-groups]
+dev = [
+    "pre-commit>=4.6.0",
+    "pytest>=9.0.3",
+]
 
-[tool.poetry.extras]
-all = ["PyYAML", "toml", "numpy", "opencv-python-headless", "torch", "matplotlib"]
+[tool.ruff]
+line-length = 95
+format = { docstring-code-format = true }
 
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^4.3.0"
-pytest = "^6.2.5"
+[tool.ruff.lint]
+select = [
+    # isort
+    "I",
+    # pycodestyle
+    "E", "W",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # flake8-builtins
+    "A",
+    # flake8-return
+    "RET",
+    # flake8-use-pathlib
+    "PTH",
+    # flynt
+    "FLY",
+    # mccabe
+    "C90",
+    # NumPy-specific rules
+    "NPY",
+    # pep8-naming
+    "N",
+    # Ruff-specific rules
+    "RUF",
+    # Pylint - very strict, may be use when have enough time
+    "PL",
+    # refurb - also may be overwhelming
+    "FURB",
+]
 
-[tool.black]
-line-length = 90
-target-version = ["py39"]
+pycodestyle = { max-doc-length = 105 }
 
-[tool.isort]
-src_paths = ["somepytools"]
-profile = "black"
-line_length = 90
-lines_after_imports = 2
+# [tool.ruff.lint.per-file-ignores]
+# "__init__.py" = ["E402"]
+# "**/{tests,docs,tools}/*" = ["E402"]
+
+[tool.uv.build-backend]
+module-name = "somepytools"
+module-root = ""
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.11.8,<0.12"]
+build-backend = "uv_build"

@@ -1,37 +1,67 @@
 default_language_version:
-  python: python3.11
+  python: python3.12
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v6.0.0
     hooks:
-      - id: check-yaml
       - id: check-json
+      - id: check-yaml
+      - id: check-toml
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
       - id: check-added-large-files
       - id: end-of-file-fixer
-      - id: trailing-whitespace
       - id: check-case-conflict
       - id: mixed-line-ending
 
-  - repo: https://github.com/psf/black
-    rev: 25.1.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12
     hooks:
-      - id: black
+      - id: ruff-format
+      - id: ruff-check
 
-  - repo: https://github.com/PyCQA/isort
-    rev: 6.0.1
-    hooks:
-      - id: isort
+  # - repo: https://github.com/rbubley/mirrors-prettier
+  #   # fork of oficial repo which support is discontinued
+  #   rev: v3.8.3
+  #   hooks:
+  #     - id: prettier
+  #       types_or: [markdown, yaml, json, toml]
+  #       additional_dependencies:
+  #         - prettier@3.6.2
+  #         - prettier-plugin-toml@2.0.6
+  #         # for plugings see https://prettier.io/docs/plugins#community-plugins
+  #       args: [--print-width=80, --prose-wrap=always]
 
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.3.0
+  - repo: local
     hooks:
-      - id: flake8
-        additional_dependencies: [flake8-bugbear]
+      - id: dprint
+        name: dprint format
+        language: rust
+        entry: dprint fmt
+        additional_dependencies:
+          - "cli:dprint:0.54.0"
+        types_or: [markdown, json, yaml, toml, dockerfile]
 
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.14.0
     hooks:
-      - id: prettier
-        types_or: [markdown, yaml, toml, json]
-        args: [--print-width=80, --prose-wrap=always]
+      - id: hadolint
+
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.11.0
+    hooks:
+      - id: shellcheck
+
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 4.1.0
+    hooks:
+      - id: sqlfluff-lint
+      # Enable later if you trust automatic SQL rewrites:
+      # - id: sqlfluff-fix
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.2
+    hooks:
+      - id: codespell
+        additional_dependencies: [tomli]
