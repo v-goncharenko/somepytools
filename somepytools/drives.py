@@ -52,7 +52,6 @@ def _download_from_google(
         quiet=quiet,
         resume=True,  # continue interrupted download
         use_cookies=use_cookies,
-        fuzzy=True,  # accept share url from UI, not only file_id
     )
 
     if downloaded_path is None:
