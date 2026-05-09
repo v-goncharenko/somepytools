@@ -1,6 +1,7 @@
 import importlib
 import os
 import shutil
+import warnings
 import zipfile
 from enum import StrEnum
 from pathlib import Path
@@ -10,6 +11,7 @@ from .typing import Directory, File, PathLike
 
 
 class DriveBackend(StrEnum):
+    Auto = "auto"
     Google = "google"
     Yandex = "yandex"
 
@@ -48,7 +50,9 @@ def _download_from_google(
         id=file_id,
         output=str(root_dir) + os.sep,
         quiet=quiet,
+        resume=True,  # continue interrupted download
         use_cookies=use_cookies,
+        fuzzy=True,  # accept share url from UI, not only file_id
     )
 
     if downloaded_path is None:
@@ -173,15 +177,64 @@ def unzip(zip_path: File, extract_dir: Directory, verbose: bool) -> None:
             print(f"Done: extracted {total} entries to {extract_dir}")
 
 
+def download(
+    file_id: str,
+    root_dir: PathLike = ".",
+    *,
+    backend: DriveBackend = DriveBackend.Auto,
+    quiet: bool = False,
+    use_cookies: bool = True,
+) -> Path:
+    """Download a public file from a cloud drive.
+
+    For Google Drive uses `gdown`, for Yandex Disk - `yadisk[sync-defaults]`.
+
+    Args:
+        file_id: Public file identifier. For ``backend="google"`` it is the Google Drive
+            file ID or shared URL; for ``backend="yandex"`` it is the Yandex Disk public
+            key or public URL (e.g. ``https://disk.yandex.ru/d/...``).
+        root_dir: Directory where the downloaded file will be stored.
+        backend: Source to download the file from. One of :class:`DriveBackend` values.
+        quiet: If True, suppress progress output (passed to ``gdown.download()`` for the
+            Google backend).
+        use_cookies: Passed to ``gdown.download()``. Keeping this True is usually useful
+            for Google Drive throttling / confirmation flows. Ignored for the Yandex
+            backend.
+
+    Returns:
+        downloaded file path
+    """
+    root_dir = Path(root_dir).expanduser().resolve()
+    root_dir.mkdir(parents=True, exist_ok=True)
+
+    backend = DriveBackend(backend)
+    if backend is DriveBackend.Auto:
+        backend = DriveBackend.Yandex if "yandex" in file_id.lower() else DriveBackend.Google
+
+    if backend is DriveBackend.Google:
+        downloaded_path = _download_from_google(
+            file_id, root_dir, quiet=quiet, use_cookies=use_cookies
+        )
+    elif backend is DriveBackend.Yandex:
+        downloaded_path = _download_from_yandex(file_id, root_dir)
+    else:
+        raise ValueError(f"Unsupported drive backend: {backend!r}")
+
+    if not downloaded_path.exists():
+        raise FileNotFoundError(f"Downloaded path does not exist: {downloaded_path}")
+
+    return downloaded_path
+
+
 def download_and_unpack(
     file_id: str,
     root_dir: PathLike = ".",
     *,
-    backend: DriveBackend = DriveBackend.Google,
+    backend: DriveBackend = DriveBackend.Auto,
     quiet: bool = False,
     use_cookies: bool = True,
     overwrite_extract_dir: bool = False,
-) -> tuple[Path, Path]:
+) -> tuple[Path, Path | None]:
     """Download a public ZIP file from a cloud drive and unpack it.
 
     For Google Drive uses `gdown`, for Yandex Disk - `yadisk[sync-defaults]`.
@@ -206,24 +259,20 @@ def download_and_unpack(
         zip_path: downloaded zip file path
         extracted_dir: dir where zip is extracted
     """
-    root_dir = Path(root_dir).expanduser().resolve()
-    root_dir.mkdir(parents=True, exist_ok=True)
-
-    backend = DriveBackend(backend)
-    if backend is DriveBackend.Google:
-        zip_path = _download_from_google(
-            file_id, root_dir, quiet=quiet, use_cookies=use_cookies
-        )
-    elif backend is DriveBackend.Yandex:
-        zip_path = _download_from_yandex(file_id, root_dir)
-    else:
-        raise ValueError(f"Unsupported drive backend: {backend!r}")
-
-    if not zip_path.exists():
-        raise FileNotFoundError(f"Downloaded path does not exist: {zip_path}")
+    zip_path = download(
+        file_id,
+        root_dir,
+        backend=backend,
+        quiet=quiet,
+        use_cookies=use_cookies,
+    )
 
     if zip_path.suffix.lower() != ".zip":
-        raise ValueError(f"Downloaded file is not a .zip archive: {zip_path.name}")
+        warnings.warn(
+            f"Downloaded file is not a .zip archive: {zip_path.name}",
+            stacklevel=2,
+        )
+        return zip_path, None
 
     extracted_dir = _prepare_extract_dir(zip_path, overwrite_extract_dir=overwrite_extract_dir)
 
